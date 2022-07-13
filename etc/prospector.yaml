@@ -1,0 +1,15 @@
+max-line-length: 120
+pylint:
+    disable:
+        - too-many-arguments
+        - too-many-locals
+        - django-not-configured
+        - logging-fstring-interpolation
+pycodestyle:
+  run: false
+pyflakes:
+  run: false
+pydocstyle:
+  run: false
+dodgy:
+  run: false

@@ -1,0 +1,21 @@
+repos:
+-   repo: local
+    hooks:
+      - id: isort
+        name: isort
+        stages: [commit]
+        language: python
+        entry: isort --line-length 120 --multi-line VERTICAL_HANGING_INDENT --src src --trailing-comma
+        types: [python]
+      - id: black
+        name: black
+        stages: [commit]
+        entry: black --line-length 120
+        language: python
+        types: [python]
+      - id: prospector
+        name: prospector
+        stages: [commit]
+        language: python
+        entry: prospector --profile etc/prospector.yaml
+        types: [python]
