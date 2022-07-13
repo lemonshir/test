@@ -1,92 +1,186 @@
-# articat-client
+# Project introduction
 
+This project serves as the CLI of the Articat service.
 
+## User guide
 
-## Getting started
+This project has been published to this VMware [PyPI Repo](https://build-artifactory.eng.vmware.com/artifactory/api/pypi/pace-pypi-local/simple)
+in the [Artifactory](https://build-artifactory.eng.vmware.com/). It can be
+installed as a command line tool by all Python package installers.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+### Installation
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+#### Pip
 
-## Add your files
+You can add this repository via the `--extra-index-url` parameter.
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
-
-```
-cd existing_repo
-git remote add origin https://gitlab.eng.vmware.com/osm-dev/articat-client.git
-git branch -M main
-git push -uf origin main
+```bash
+pip install articat-cli --extra-index-url https://build-artifactory.eng.vmware.com/artifactory/api/pypi/pace-pypi-local/simple
 ```
 
-## Integrate with your tools
+#### Poetry
 
-- [ ] [Set up project integrations](https://gitlab.eng.vmware.com/osm-dev/articat-client/-/settings/integrations)
+You can add this repository to the `pyproject.toml` file in your project.
 
-## Collaborate with your team
+```bash
+[[tool.poetry.source]]
+name = "ves_pypi"
+url = "https://build-artifactory.eng.vmware.com/artifactory/api/pypi/pace-pypi-local/simple"
+```
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+then add it by
 
-## Test and Deploy
+```bash
+poetry add articat-cli
+```
 
-Use the built-in continuous integration in GitLab.
+### Shell completion
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+After this project is installed, you can enable the `shell` completion for your shell.
 
-***
+#### bash
 
-# Editing this README
+Add this to `~/.bashrc`:
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!).  Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
+```bash
+_ARTICAT_CLI_CMD="articat-cli"
+if command -v $_ARTICAT_CLI_CMD >/dev/null 2>&1; then
+    eval "$(_ARTICAT_CLI_COMPLETE=bash_source $_ARTICAT_CLI_CMD)"
+fi
+```
 
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+#### zsh
 
-## Name
-Choose a self-explaining name for your project.
+Add this to `~/.zshrc`:
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+```bash
+_ARTICAT_CLI_CMD="articat-cli"
+if command -v $_ARTICAT_CLI_CMD >/dev/null 2>&1; then
+    eval "$(_ARTICAT_CLI_COMPLETE=zsh_source $_ARTICAT_CLI_CMD)"
+fi
+```
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+### Usage as a CLI tool
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+After this project is installed as a Python package, you can execute the
+following command to see the usage.
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+```bash
+articat-cli --help
+```
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+#### ESP API token
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+The ESP API token is required to generate the access token which is used to
+communicate with Helix services. The API token can be generated [here](https://auth.esp.vmware.com/api-tokens/).
+You can either specify it via the command line option or export it as the environment
+variable which can be used by this tool automatically with:
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+```bash
+export ESP_API_TOKEN=<YOUR_ESP_API_TOKEN>
+```
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+**NOTE:** The access token will be refreshed automatically if it expires when the
+CLI is running.
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+### Usage as a library
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+#### Basic Usage
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+The class `Helix` or `HttpServer` can be inherited and extended as necessary. For example,
 
-## License
-For open source projects, say how it is licensed.
+```python
+from srp_validator.server import HelixServer
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+
+class PolicyServer(Helix):
+    def __init__(self, **kwargs):
+        super().__init__(service="policy", **kwargs)
+
+    def list_policies(self):
+        """
+        List all policies
+        """
+        sub_url = "controls"
+        full_url = self.get_full_url(sub_url)
+        return self.get(full_url)
+```
+
+#### Defaul Retry Policy
+
+##### Retry Condition
+
+By default, all HTTP methods in `HttpServer` will be retried if any of the recoverable
+errors below happens:
+
+1. a `ConnectionError` is raised
+2. 500 <= status code < 600
+3. status code == 401, which means the token has expired
+
+##### Retry Attempt
+
+There will be at most 4 attempts to retry
+
+## Development Guide
+
+Please go through the following check list to ensure that you can setup
+the development env.
+
+### Clone the repository and config commit template
+
+```bash
+git clone git@gitlab.eng.vmware.com:osm-dev/articat-cli.git
+cd articat-cli
+git config commit.template etc/git-commit-template.md
+```
+
+### Python version
+
+We use the `Python ^3.9`.
+
+### Install [poetry](https://python-poetry.org/)
+
+We use `poetry` to manage the dependencies in this project. You can install it by:
+
+```bash
+pip install poetry
+```
+
+You can then enable the tab completion by following the
+[doc](https://python-poetry.org/docs/#enable-tab-completion-for-bash-fish-or-zsh).
+The most frequently used commands should be `poetry add` and `poetry remove`.
+For example, you can use `poetry add --dev` to add dependencies only required by
+the development env and use `poetry add` to add dependencies required by the production env. In the both situation, `poetry` will update the `pyproject.toml` and `poetry.lock` automatically for you.  
+You can refer to the [poetry documentaion](https://python-poetry.org/docs/) for more information.
+
+### Setup Python virtual env
+
+```bash
+$ python3 -m venv articat-cli
+$ source articat-cli/bin/activate
+# Go to the project directory to install the dependencies
+$ poetry install
+```
+
+### Setup [pre-commit](https://pre-commit.com/)
+
+```bash
+pre-commit install -f -c etc/pre-commit-config.yaml
+```
+
+The following hooks will be run automatically in the `pre-commit` phase:
+
+- [black](https://github.com/psf/black): The uncompromising Python code formatter
+
+- [isort](https://github.com/timothycrosley/isort): A Python utility to sort imports
+
+- [pylint](https://github.com/PyCQA/pylint): A tool to analyse Python code
+
+### Publish to Artifactory
+
+```bash
+# Update the `verson` in the `pyproject.toml` first
+poetry config repositories.ves_pypi https://build-artifactory.eng.vmware.com/artifactory/api/pypi/pace-pypi-local
+poetry config http-basic.ves_pypi YOUR_AD_ID_WITHOUT_DOMAIN YOUR_AD_PASSWORD
+poetry publish -r ves_pypi --build
+```
