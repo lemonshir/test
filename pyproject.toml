@@ -1,9 +1,10 @@
 [tool.poetry]
 name = "articat-cli"
-version = "0.0.1"
+version = "0.0.2"
 description = ""
 authors = ["Lemon Shi <shir@vmware.com>"]
 license = "MIT"
+include = ["articat_cli"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
@@ -20,7 +21,7 @@ ipython = "^8.4.0"
 pylint = "^2.14.4"
 
 [tool.poetry.scripts]
-articat-cli = "articat_cli:main"
+articat-cli = "articat_cli.main:main"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

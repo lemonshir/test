@@ -8,9 +8,9 @@ from dataclasses import dataclass
 from typing import Dict
 
 import click
+import settings
 import urllib3
 from click import pass_context, pass_obj
-
 from enums import LogLevel, Server
 from exceptions import UrlUnconverted
 from server import Articat
@@ -28,7 +28,9 @@ class Context:
     log_level: str
     trace_back: bool
     is_within_envoy: bool
-    esp_api_token: str
+    is_csp_prod: bool
+    csp_client_id: str
+    csp_client_secret: str
 
 
 def get_server_help_msg() -> str:
@@ -49,7 +51,12 @@ def get_articat_server(context: Context) -> Articat:
             "is_within_envoy": context.is_within_envoy,
             "ssl_verify": False,
         }
-    server_config["esp_api_token"] = context.esp_api_token
+        if context.is_csp_prod:
+            server_config["csp_token_url"] = settings.CSP_TOKEN_URL
+        else:
+            server_config["csp_token_url"] = settings.CSP_STG_TOKEN_URL
+    server_config["csp_client_id"] = context.csp_client_id
+    server_config["csp_client_secret"] = context.csp_client_secret
     return Articat(**server_config)
 
 
@@ -81,11 +88,24 @@ def get_articat_server(context: Context) -> Articat:
     help="Whether the server is within the Helix Envoy",
 )
 @click.option(
-    "--esp-api-token",
+    "--is-csp-prod/--not-csp-prod",
+    show_default=True,
+    default=False,
+    help="Whether use the CSP prod env to generate the token",
+)
+@click.option(
+    "--csp-client-id",
     required=True,
     type=str,
-    envvar="ESP_API_TOKEN",
-    help="the ESP API token used to communicate with Helix services",
+    envvar="CSP_CLIENT_ID",
+    help="the client id of the CSP OAuth APP",
+)
+@click.option(
+    "--csp-client-secret",
+    required=True,
+    type=str,
+    envvar="CSP_CLIENT_SECRET",
+    help="the client secret of the CSP OAuth APP",
 )
 @pass_context
 def main(
@@ -94,7 +114,9 @@ def main(
     log_level,
     trace_back,
     is_within_envoy,
-    esp_api_token,
+    is_csp_prod,
+    csp_client_id,
+    csp_client_secret,
 ):
     logging.basicConfig(
         level=log_level,
@@ -106,7 +128,9 @@ def main(
         log_level=log_level,
         trace_back=trace_back,
         is_within_envoy=is_within_envoy,
-        esp_api_token=esp_api_token,
+        is_csp_prod=is_csp_prod,
+        csp_client_id=csp_client_id,
+        csp_client_secret=csp_client_secret,
     )
     ctx.obj.server = get_articat_server(ctx.obj)
 
