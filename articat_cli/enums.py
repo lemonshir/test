@@ -16,7 +16,10 @@ class Protocal(Enum):
 @unique
 class Server(Enum):
     DEV = "dev"
+    ARA_DEV = "ara_dev"
     BETA = "beta"
+    VELA_BETA = "vela_beta"
+    ESP_BETA = "esp_beta"
     PRODUCTION = "prod"
     LOCAL = "local"
 

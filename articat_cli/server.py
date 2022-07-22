@@ -10,18 +10,18 @@ from abc import ABC, abstractmethod
 from typing import Dict, Iterator
 
 import requests
+import settings
+from enums import RespItemKey, Service, TaskEndpointUrl, TaskStatus
+from exceptions import TaskFailed, TaskTimeout
 from requests import Response, Session
+from requests.auth import HTTPBasicAuth
 from requests.hooks import HOOKS
 from requests.sessions import merge_hooks
+from retrying import retry_decorator
 from tenacity import retry
 from tenacity.retry import retry_if_exception_type
 from tenacity.stop import stop_after_attempt
 from tenacity.wait import wait_fixed
-
-import settings
-from enums import RespItemKey, Service, TaskEndpointUrl, TaskStatus
-from exceptions import TaskFailed, TaskTimeout
-from retrying import retry_decorator
 from utils import join_url_segs
 
 logger = logging.getLogger(__file__)
@@ -284,18 +284,29 @@ class Helix(HttpServer):
     of the Envoy
     """
 
-    def __init__(self, hostname, service_name, api_version, esp_api_token, *args, **kwargs):
+    def __init__(
+        self,
+        hostname,
+        service_name,
+        api_version,
+        csp_token_url=None,
+        csp_client_id=None,
+        csp_client_secret=None,
+        **kwargs,
+    ):
         if not kwargs.pop("is_within_envoy"):
             service_name = None
-        super().__init__(hostname, service_name, api_version, *args, **kwargs)
-        self._esp_api_token = esp_api_token
-        self.register_esp_auth_hooks()
+        super().__init__(hostname, service_name, api_version, **kwargs)
+        self._csp_token_url = csp_token_url
+        self._csp_client_id = csp_client_id
+        self._csp_client_secret = csp_client_secret
+        self.register_auth_hooks()
 
     @property
-    def esp_api_token(self):
-        return self._esp_api_token
+    def csp_client_id(self):
+        return self._csp_client_id
 
-    def register_esp_auth_hooks(self) -> None:
+    def register_auth_hooks(self) -> None:
         """
         Register hooks to preprocess the Http response
         """
@@ -308,8 +319,10 @@ class Helix(HttpServer):
         generate the temporary access token from the API Token and update the
         header with the new access token
         """
-        body = {"token": self.esp_api_token}
-        resp = self.POST(self._esp_api_token, data=body)
+        data = "grant_type=client_credentials"
+        headers = {"Content-Type": "application/x-www-form-urlencoded"}
+        basic_auth = HTTPBasicAuth(self._csp_client_id, self._csp_client_secret)
+        resp = self.POST(self._csp_token_url, data=data, auth=basic_auth, headers=headers)
         self._access_token = resp.json()["access_token"]
         self._session.headers["Authorization"] = f"Bearer {self._access_token}"
         logger.debug(f"Authorization: {self._session.headers['Authorization']}")
