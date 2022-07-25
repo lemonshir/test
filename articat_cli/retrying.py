@@ -2,12 +2,13 @@ import logging
 from functools import partial, wraps
 from typing import Callable, Iterator
 
-import settings
 from requests.exceptions import HTTPError
 from tenacity import RetryCallState, Retrying
 from tenacity.retry import retry_base
 from tenacity.stop import stop_after_attempt
 from tenacity.wait import wait_exponential
+
+from . import settings
 
 logger = logging.getLogger(__file__)
 

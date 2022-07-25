@@ -8,13 +8,14 @@ from dataclasses import dataclass
 from typing import Dict
 
 import click
-import settings
 import urllib3
 from click import pass_context, pass_obj
-from enums import LogLevel, Server
-from exceptions import UrlUnconverted
-from server import Articat
-from settings import SERVERS
+
+from . import settings
+from .enums import LogLevel, Server
+from .exceptions import UrlUnconverted
+from .server import Articat
+from .settings import SERVERS
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

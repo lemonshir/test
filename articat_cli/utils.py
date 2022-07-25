@@ -1,7 +1,7 @@
 import logging
 from typing import List
 
-from enums import PuncEnum
+from .enums import PuncEnum
 
 logger = logging.getLogger(__file__)
 
