@@ -1,6 +1,6 @@
 from types import MappingProxyType
 
-from enums import Server
+from .enums import Server
 
 ESP_TOKEN_URL = "https://auth.esp.vmware.com/api/auth/v1/api-tokens/authorize"
 CSP_TOKEN_URL = "https://console.cloud.vmware.com/csp/gateway/am/api/auth/token"

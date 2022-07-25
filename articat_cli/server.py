@@ -10,19 +10,20 @@ from abc import ABC, abstractmethod
 from typing import Dict, Iterator
 
 import requests
-import settings
-from enums import RespItemKey, Service, TaskEndpointUrl, TaskStatus
-from exceptions import TaskFailed, TaskTimeout
 from requests import Response, Session
 from requests.auth import HTTPBasicAuth
 from requests.hooks import HOOKS
 from requests.sessions import merge_hooks
-from retrying import retry_decorator
 from tenacity import retry
 from tenacity.retry import retry_if_exception_type
 from tenacity.stop import stop_after_attempt
 from tenacity.wait import wait_fixed
-from utils import join_url_segs
+
+from . import settings
+from .enums import RespItemKey, Service, TaskEndpointUrl, TaskStatus
+from .exceptions import TaskFailed, TaskTimeout
+from .retrying import retry_decorator
+from .utils import join_url_segs
 
 logger = logging.getLogger(__file__)
 
