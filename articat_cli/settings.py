@@ -56,5 +56,11 @@ SERVERS = MappingProxyType(
             "is_within_envoy": True,
             "csp_token_url": CSP_TOKEN_URL,
         },
+        Server.PAVO_BETA.value: {
+            "hostname": "https://articat.pavo.decc.vmware.com",
+            "ssl_verify": True,
+            "is_within_envoy": False,
+            "csp_token_url": CSP_STG_TOKEN_URL,
+        },
     }
 )
