@@ -22,6 +22,7 @@ class Server(Enum):
     ESP_BETA = "esp_beta"
     PRODUCTION = "prod"
     LOCAL = "local"
+    PAVO_BETA = "pavo_beta"
 
 
 @unique
