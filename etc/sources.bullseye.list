@@ -1,0 +1,3 @@
+deb http://artifactory.eng.vmware.com/debian-remote bullseye main non-free contrib
+deb http://artifactory.eng.vmware.com/debian-remote bullseye-updates main non-free contrib
+deb http://artifactory.eng.vmware.com/debian-remote bullseye-backports main non-free contrib
