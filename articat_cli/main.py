@@ -2,36 +2,23 @@
 The entrypoint of the CLI
 """
 import logging
-import sys
-import traceback
-from dataclasses import dataclass
-from typing import Dict
 
 import click
 import urllib3
-from click import pass_context, pass_obj
+from click import pass_context
 
 from . import settings
+from .e2e_test import run_e2e_test
 from .enums import LogLevel, Server
-from .exceptions import UrlUnconverted
+from .helper import Context
 from .server import Articat
 from .settings import SERVERS
+from .smoke_test import run_smoke_test
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 logger = logging.getLogger(__file__)
-
-
-@dataclass
-class Context:
-    server_alias: str
-    log_level: str
-    trace_back: bool
-    is_within_envoy: bool
-    is_csp_prod: bool
-    csp_client_id: str
-    csp_client_secret: str
 
 
 def get_server_help_msg() -> str:
@@ -66,6 +53,7 @@ def get_articat_server(context: Context) -> Articat:
     "-s",
     "--server-alias",
     default=Server.BETA.value,
+    type=str,
     show_default=True,
     help=get_server_help_msg(),
 )
@@ -136,40 +124,8 @@ def main(
     ctx.obj.server = get_articat_server(ctx.obj)
 
 
-@main.command()
-@pass_obj
-def run_smoke_test(ctx_obj: Context):
-    server: Articat = ctx_obj.server
-    try:
-        srp_uid = convert_url_to_pkg_srp_uid(server)
-        logger.info(f"The SRP Unique Id is {srp_uid}")
-        prov_data = fetch_pkg_prov_data_by_srp_uid(server, srp_uid)
-        logger.info(f"The prov data is {prov_data}")
-        logging.info("The smoke test has completed successfully.")
-    except Exception as e:
-        if ctx_obj.trace_back:
-            traceback.print_exc()
-        logging.error(f"The smoke test has failed! Error msg: {e}")
-        sys.exit(1)
-
-
-def convert_url_to_pkg_srp_uid(server: Articat) -> str:
-    artifact_url = "https://build-artifactory.eng.vmware.com/jcenter-cache/junit/junit/4.13/junit-4.13.jar"
-    input_data = {"inputs": [artifact_url]}
-    json_resp: Dict = server.convert_url_to_pkg_srp_uid(input_data)
-    outputs = json_resp.get("outputs")
-    assert outputs
-    comp_ids = outputs.get("comp_ids")
-    if not comp_ids:
-        raise UrlUnconverted(artifact_url)
-    return comp_ids[0]
-
-
-def fetch_pkg_prov_data_by_srp_uid(server: Articat, srp_uid: str) -> Dict:
-    input_data = {"inputs": [srp_uid]}
-    json_resp: Dict = server.fetch_pkg_prov_data_by_srp_uid(input_data)
-    outputs = json_resp.get("outputs")
-    return outputs
+main.add_command(run_smoke_test)
+main.add_command(run_e2e_test)
 
 
 if __name__ == "__main__":
