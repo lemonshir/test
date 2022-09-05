@@ -15,14 +15,15 @@ class Protocal(Enum):
 
 @unique
 class Server(Enum):
-    DEV = "dev"
-    ARA_DEV = "ara_dev"
-    BETA = "beta"
-    VELA_BETA = "vela_beta"
-    ESP_BETA = "esp_beta"
-    PRODUCTION = "prod"
     LOCAL = "local"
-    PAVO_BETA = "pavo_beta"
+    HELIX_DEV = "helix_dev"
+    ARTICAT_DEV = "articat_dev"
+    HELIX_BETA = "helix_beta"
+    ARTICAT_BETA = "articat_beta"
+    HELIX_STAGING = "helix_staging"
+    ARTICAT_STAGING = "articat_staging"
+    HELIX_PRODUCTION = "helix_production"
+    ARTICAT_PRODUCTION = "articat_production"
 
 
 @unique
