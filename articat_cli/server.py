@@ -345,17 +345,10 @@ class Articat(Helix):
     )
     def execute_task(self, task_endpoint_url, post_data, timeout) -> Dict:
         full_url = join_url_segs([self.root_url, task_endpoint_url, "tasks"])
-        json_resp = self.post(full_url, body=post_data)
+        url_with_force_option = f"{full_url}?force=1"
+        json_resp = self.post(url_with_force_option, body=post_data)
         task_status = TaskStatus(json_resp["status"])
         task_url = json_resp["task_url"]
-        if task_status in [TaskStatus.CANCELLED, TaskStatus.FAILED, TaskStatus.SUCCEEDED]:
-            old_task_url = task_url
-            logger.info(f"This task has been executed before: {task_url}")
-            url_with_force_option = f"{full_url}?force=1"
-            json_resp = self.post(url_with_force_option, body=post_data)
-            task_status = TaskStatus(json_resp["status"])
-            task_url = json_resp["task_url"]
-            assert task_url != old_task_url, "The task url is not changed by a force post"
         logging.info(f"A new task is created: {task_url}")
         json_resp = self.pull_until_task_is_done_or_timeout(task_url, timeout)
         task_status = TaskStatus(json_resp["status"])
