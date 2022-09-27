@@ -52,7 +52,7 @@ def get_articat_server(context: Context) -> Articat:
 @click.option(
     "-s",
     "--server-alias",
-    default=Server.ARTICAT_BETA.value,
+    default=Server.HELIX_DEV.value,
     type=str,
     show_default=True,
     help=get_server_help_msg(),

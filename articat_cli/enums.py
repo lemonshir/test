@@ -17,13 +17,8 @@ class Protocal(Enum):
 class Server(Enum):
     LOCAL = "local"
     HELIX_DEV = "helix_dev"
-    ARTICAT_DEV = "articat_dev"
-    HELIX_BETA = "helix_beta"
-    ARTICAT_BETA = "articat_beta"
     HELIX_STAGING = "helix_staging"
-    ARTICAT_STAGING = "articat_staging"
     HELIX_PRODUCTION = "helix_production"
-    ARTICAT_PRODUCTION = "articat_production"
 
 
 @unique
