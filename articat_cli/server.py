@@ -330,10 +330,6 @@ class Helix(HttpServer):
 
 
 class Articat(Helix):
-    ARTIFACT_IDS = "artifact-ids"
-    ARTIFACT_PROV = "artifact-prov"
-    STRING_DIGEST = "string-digest"
-
     def __init__(self, hostname, *args, **kwargs):
         super().__init__(hostname, Service.ARTICAT.value, settings.ARTICAT_API_VERSION, *args, **kwargs)
 
@@ -368,7 +364,7 @@ class Articat(Helix):
         raise TaskTimeout
 
     def convert_url_to_pkg_srp_uid(self, post_data):
-        return self.execute_task(TaskEndpointUrl.ARTIFACT_IDS.value, post_data, settings.TASK_TIMEOUT_FOR_ARTIFACT_IDS)
+        return self.execute_task(TaskEndpointUrl.COMPONENT_IDS.value, post_data, settings.TASK_TIMEOUT_FOR_ARTIFACT_IDS)
 
     def fetch_pkg_prov_data_by_srp_uid(self, post_data):
         return self.execute_task(

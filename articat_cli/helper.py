@@ -1,20 +1,30 @@
+import json
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Dict
 
 from .exceptions import UrlUnconverted
 from .server import Articat
 
 
-def convert_url_to_pkg_srp_uid(server: Articat, artifact_url: str) -> str:
-    input_data = {"inputs": [artifact_url]}
+def load_urls():
+    urls_json_path = Path(__file__).parent / "urls.json"
+    with urls_json_path.open(encoding="u8") as f:
+        return json.load(f)
+
+
+def convert_url_to_pkg_srp_uid(server: Articat) -> str:
+    input_data = {"inputs": load_urls()}
     json_resp: Dict = server.convert_url_to_pkg_srp_uid(input_data)
     outputs = json_resp.get("outputs")
     assert outputs
-    comp_ids = outputs.get("comp_ids")
-    if not comp_ids:
-        raise UrlUnconverted(artifact_url)
-    srp_uid = comp_ids[0]
-    return srp_uid
+    for _, group_result in outputs.items():
+        comp_ids = group_result.get("comp_ids")
+        if not comp_ids:
+            raise UrlUnconverted()
+        srp_uid = comp_ids[0]
+        return srp_uid
+    raise UrlUnconverted()
 
 
 def fetch_pkg_prov_data_by_srp_uid(server: Articat, srp_uid: str) -> Dict:
