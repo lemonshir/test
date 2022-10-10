@@ -151,7 +151,7 @@ def run_e2e_test(ctx_obj: Context, observer_json_file: str, report_json_file: st
 
 def _convert_url_to_pkg_srp_uid(server: Articat, url: str, report: Report) -> str:
     try:
-        return convert_url_to_pkg_srp_uid(server, url)
+        return convert_url_to_pkg_srp_uid(server)
     except UrlUnconverted:
         if url not in report.unconverted_urls:
             report.unconverted_urls.append(url)

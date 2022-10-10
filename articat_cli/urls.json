@@ -1,0 +1,10 @@
+{
+    "GET": [
+        {
+            "base_path": "https://build-artifactory.eng.vmware.com",
+            "paths": [
+                "jcenter-cache/junit/junit/4.13/junit-4.13.jar"
+            ]
+        }
+    ]
+}

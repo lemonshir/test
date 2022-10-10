@@ -82,6 +82,6 @@ class TaskStatus(Enum):
 
 @unique
 class TaskEndpointUrl(Enum):
-    ARTIFACT_IDS = "artifact-ids"
+    COMPONENT_IDS = "component-ids"
     ARTIFACT_PROV = "artifact-prov"
     STRING_DIGEST = "string-digest"

@@ -19,8 +19,7 @@ logger = logging.getLogger(__file__)
 def run_smoke_test(ctx_obj: Context):
     try:
         server: Articat = ctx_obj.server
-        artifact_url = "https://build-artifactory.eng.vmware.com/jcenter-cache/junit/junit/4.13/junit-4.13.jar"
-        srp_uid = convert_url_to_pkg_srp_uid(server, artifact_url)
+        srp_uid = convert_url_to_pkg_srp_uid(server)
         logger.info(f"The SRP Unique Id is {srp_uid}")
         prov_data = fetch_pkg_prov_data_by_srp_uid(server, srp_uid)
         logger.info(f"The prov data is {prov_data}")
